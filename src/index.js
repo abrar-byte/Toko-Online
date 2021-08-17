@@ -1,8 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import E from './E';
+// import Hover from './Hover';
 import './index.css';
-import App from './App';
+// import PopoverExampleMulti from './Pop';
+// import Navi from './Navbar';/
+// import App from './App';
 import reportWebVitals from './reportWebVitals';
+// import Roti from './Router';
+import App from './Router2';
+// import Roti from './Router'
+// import Tugas from './Tugas';
 
 ReactDOM.render(
   <React.StrictMode>

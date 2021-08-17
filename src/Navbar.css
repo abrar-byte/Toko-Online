@@ -1,0 +1,7 @@
+.navbar{
+  height: 100px;
+  color: white;
+}
+.nav.item{
+  justify-content: end;
+}
