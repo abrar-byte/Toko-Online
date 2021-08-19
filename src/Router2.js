@@ -7,6 +7,7 @@ import {
   Switch,
   Route,
   Link,
+  Redirect,
 
 } from "react-router-dom";
 import Beli from './beli';
@@ -15,19 +16,44 @@ import Detail from './Detail';
 import Tes from './Tes/Tes';
 import Coba from './Coba';
 import './style.css';
+import { connect } from 'react-redux';
+import { createBrowserHistory } from 'history';
+import Login from './Login';
+import Admin from './Admin';
 
 
-
-export default class App extends Component {
+const HarusLogin = ({ component: Component, ...props  /* ini untuk merender props propsnya */ }) => {
+  // di sini component diubah menjadi Component
+  // const HarusLogin adalah functional componet
+  const token = localStorage.getItem('token');
+  return (
+    <Route
+      {...props}
+      render={(props2) =>
+        token /* jika token ada */ ? (
+          props.path === "/login" /* jika pathnya adalah /login */ ? (
+            <Redirect to="/admin" /> /* maka dimasukkan ke /admin */
+          ) : (
+            <Component {...props2} /> /* jika pathnya bukan /login dan ada token maka kembali ke Component yaitu Admin */
+            // Ini Visual pembawaan props, knp componentnya jadi huruf besar, krn harus besar Huruf Awalnya
+          )
+        ) : (
+          <Redirect to="/login" /> /* jika tidak ada token dan pathnya login maka masuk ke login */
+        )
+      }
+    />
+  );
+};
+class App extends Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
     this.state = {
       popoverOpen: false,
-      basket: JSON.parse(localStorage.getItem("keranjang")) || [],
-      jumlah: 0,
-      total: 0,
+      // basket: JSON.parse(localStorage.getItem("keranjang")) || [],
+      // jumlah: 0,
+      // total: 0,
 
     };
   }
@@ -37,57 +63,19 @@ export default class App extends Component {
     this.total()
   }
 
-  tambah = (item) => {
-    const keranjang = this.state.basket
-    const i = keranjang.findIndex(s => s.nama === item.nama)
-    if (i < 0) {
-      keranjang.push({ nama: item.nama, harga: item.harga, jumlah: 1, total: item.harga })
-    } else {
-      keranjang[i].harga = item.harga
-      keranjang[i].jumlah = keranjang[i].jumlah + 1
-      keranjang[i].total = keranjang[i].jumlah * item.harga
-    }
-    this.setState({ basket: keranjang })
-    localStorage.setItem('keranjang', JSON.stringify(keranjang))
-    this.total()
-    this.jumlah()
-  }
-  kurang = (item) => {
-    const keranjang = this.state.basket
-    // mengecek apakah di dalam keranjang sudah ada item apa belum
-    const i = keranjang.findIndex(s => s.nama === item.nama)
-    if (keranjang[i].jumlah <= 1) {
-      keranjang.splice(i, 1)
-    } else {
-      keranjang[i].harga = item.harga
-      keranjang[i].jumlah = keranjang[i].jumlah - 1
-      keranjang[i].total = keranjang[i].jumlah * item.harga
-    }
-    this.setState({ basket: keranjang })
-    localStorage.setItem('keranjang', JSON.stringify(keranjang))
-    this.total()
-    this.jumlah()
-
-  }
-
-  hapus = () => {
-    this.setState({ basket: [] })
-    this.setState({ total: 0 })
-    localStorage.removeItem('keranjang')
-    this.jumlah()
 
 
+
+
+  jumlah = () => {
+    let jumlah = this.props.keranjang
+    let allJumlah = jumlah.reduce((sum, data) => sum + data.jumlah, 0)
+    this.props.fungsiJumlah(allJumlah)
   }
   total = () => {
-    let total = this.state.basket
+    let total = this.props.keranjang
     let allTotal = total.reduce((sum, data) => sum + data.total, 0)
-    console.log(allTotal);
-    this.setState({ total: allTotal })
-  }
-  jumlah = () => {
-    let jumlah = this.state.basket
-    let allJumlah = jumlah.reduce((sum, data) => sum + data.jumlah, 0)
-    this.setState({ jumlah: allJumlah })
+    this.props.fungsiTotal(allTotal)
   }
   toggle() {
     this.setState({
@@ -107,18 +95,20 @@ export default class App extends Component {
 
     return (
       <div>
-        <Router>
+        <Router history={createBrowserHistory()}>
           <div>
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="warning" expand="lg">
               <Navbar.Brand href="#home">
                 <img
                   alt=""
-                  src="shopee-logo.svg"
-                  width="40"
-                  height="40"
+                  src="logo.png"
+                  width="150"
+                  height="100"
                   className="d-inline-block align-top"
-                />{' '}
-                Belii
+                />
+              </Navbar.Brand>
+              <Navbar.Brand className="ml-1">
+                <h5>Search</h5>
               </Navbar.Brand>
 
               <Navbar.Brand className="ml-1">
@@ -131,13 +121,13 @@ export default class App extends Component {
                     onMouseEnter={() => this.onHover(true)}
                     onMouseLeave={() => this.onHover(false)}>
                     <img src="2849824-basket-buy-market-multimedia-shop-shopping-store_107977 (1).png" width="25" height="25" />
-                    <Badge bg="primary" className="text-primary">{this.state.jumlah}</Badge>
+                    <Badge bg="primary" className="text-primary">{this.props.jumlah}</Badge>
                     {/* <button onClick={this.jumlah}>B</button> */}
                   </Link>
                   <Popover size="responsive" placement="bottom" isOpen={this.state.popoverOpen} target="Popover1" toggle={this.toggle} >
                     <PopoverHeader>Keranjang</PopoverHeader>
                     <PopoverBody /* style={{ width: "500px" }} */>{/* <Keranjang /> */}
-                      {this.state.basket &&
+                      {this.props.keranjang &&
                         <Table striped bordered hover size="sm">
                           <thead>
                             <tr>
@@ -149,7 +139,7 @@ export default class App extends Component {
                             </tr>
                           </thead>
                           <tbody>
-                            {this.state.basket.map((item, i) =>
+                            {this.props.keranjang.map((item, i) =>
 
                               <tr key={i}>
                                 <td>{item.nama}</td>
@@ -174,7 +164,7 @@ export default class App extends Component {
 
                               <td>
 
-                                <strong>Rp {this.state.total}</strong>
+                                <strong>Rp {this.props.total}</strong>
 
                               </td>
                             </tr>
@@ -196,7 +186,10 @@ export default class App extends Component {
 
               <Navbar.Collapse className="justify-content-end">
 
-                <Navbar.Text>Login</Navbar.Text>
+                <Nav.Link>
+                  <Link to="/login">Login</Link>
+                </Nav.Link>
+
               </Navbar.Collapse>
 
             </Navbar>
@@ -225,6 +218,11 @@ export default class App extends Component {
               <Route path="/tes">
                 <Tes />
               </Route>
+              <Route path="/login" component={Login} />
+
+              <HarusLogin path="/admin" component={Admin} />
+
+
             </Switch>
           </div>
         </Router >
@@ -232,3 +230,23 @@ export default class App extends Component {
     );
   }
 }
+
+const mapStatetoProps = (state) => {
+  return {
+    keranjang: state.keranjang,
+    jumlah: state.jumlah,
+    total: state.total,
+
+  }
+}
+
+const mapDispatchtoProps = (dispatch) => {
+  return {
+    fungsiKeranjang: (p) => dispatch({ type: "fungsi1", keranjang: p }),
+    fungsiJumlah: (p) => dispatch({ type: "fungsi2", jumlah: p }),
+    fungsiTotal: (p) => dispatch({ type: "fungsi3", total: p })
+
+  }
+}
+
+export default connect(mapStatetoProps, mapDispatchtoProps)(App)

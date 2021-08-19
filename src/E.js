@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+// ini hanya untuk percobaan
+
 export default class E extends Component {
   state = {
     nama: "Danil",

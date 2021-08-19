@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Table, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import Badeg from './Badge';
-
+// ini tidak dipakai ya ges ya
 export default class Keranjang extends Component {
   state = {
     // basket: JSON.parse(localStorage.getItem("keranjang")) || []

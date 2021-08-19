@@ -3,21 +3,30 @@ import React, { Component } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { connect } from "react-redux";
 
-
-export default class Detail extends Component {
+class Detail extends Component {
   state = {
     detail: localStorage.getItem("detail")
       ? JSON.parse(localStorage.getItem("detail"))
       : null,
-    total: 0,
+    // total: 0,
 
   };
 
-
+  jumlah = () => {
+    let jumlah = this.props.keranjang
+    let allJumlah = jumlah.reduce((sum, data) => sum + data.jumlah, 0)
+    this.props.fungsiJumlah(allJumlah)
+  }
+  total = () => {
+    let total = this.props.keranjang
+    let allTotal = total.reduce((sum, data) => sum + data.total, 0)
+    this.props.fungsiTotal(allTotal)
+  }
 
   tambahin = () => {
-    const keranjang = this.props.basket
+    const keranjang = this.props.keranjang
     const detail = this.state.detail;
     const obj = { skuId: detail.skuId, nama: detail.itemTitle, jumlah: 1, harga: detail.itemPrice, total: detail.itemPrice }
     const index =
@@ -39,13 +48,18 @@ export default class Detail extends Component {
         keranjang[index].jumlah * keranjang[index].harga;
       localStorage.setItem("keranjang", JSON.stringify(keranjang))
     }
-    this.props.jumlah()
-    this.props.total()
+    this.jumlah()
+    this.total()
   }
 
 
   render() {
-    console.log();
+    console.log(this.props.keranjang);
+    console.log(this.props.fungsiJumlah);
+    console.log(this.props.fungsiTotal);
+
+
+
     return (
       <div>
         {localStorage.getItem("detail") && (
@@ -63,7 +77,7 @@ export default class Detail extends Component {
                     <th>{this.state.detail.itemTitle}</th>
                   </Card.Title>
                   <Card.Text>
-                    <td>{this.state.detail.itemPrice}</td>
+                    <td>Rp. {this.state.detail.itemPrice}</td>
                   </Card.Text>
                 </Card.Body>
                 <Link to="/keranjang"><Button onClick={this.tambahin}>
@@ -78,3 +92,17 @@ export default class Detail extends Component {
     );
   }
 }
+
+const mapStatetoProps = (state) => {
+  return { keranjang: state.keranjang };
+};
+
+const mapDispatchtoProps = (dispatch) => {
+  return {
+    fungsiJumlah: (p) => dispatch({ type: "fungsi2", jumlah: p }),
+    fungsiTotal: (p) => dispatch({ type: "fungsi3", total: p })
+
+  }
+}
+
+export default connect(mapStatetoProps, mapDispatchtoProps)(Detail)
