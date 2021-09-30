@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, FormLabel } from "react-bootstrap";
 
 export default class Login extends Component {
   componentDidMount() {
@@ -30,12 +30,16 @@ export default class Login extends Component {
     console.log(this.props);
     return (
       <div>
+        <h1>Login </h1>
         <Form onSubmit={this.masukAdmin}>
-          <Form.Control name="username" placeholder="Username" />
+          <FormLabel>Account</FormLabel>
+          <Form.Control name="username" placeholder="masukkan nama" />
+          <FormLabel>Password</FormLabel>
+
           <Form.Control
             name="password"
             type="password"
-            placeholder="Password"
+            placeholder="masukkan password"
           />
 
           <Button variant="primary" type="submit">

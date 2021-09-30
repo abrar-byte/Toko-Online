@@ -1,17 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-// import E from './E';
 import './index.css';
-// import PopoverExampleMulti from './Pop';
-// import Navi from './Navbar';/
-// import App from './App';
 import reportWebVitals from './reportWebVitals';
-// import Roti from './Router';
-import App from './Router2';
-import { store } from './store';
-// import Roti from './Router'
-// import Tugas from './Tugas';
+import App from './Components/Router2';
+import { store } from './Components/store';
+import axios from 'axios';
+
+axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
 ReactDOM.render(
   <React.StrictMode>
