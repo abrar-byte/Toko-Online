@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+// ngetes parsing props
 export default class Tes1 extends Component {
   render() {
     return (

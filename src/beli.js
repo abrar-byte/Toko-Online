@@ -10,19 +10,19 @@ import {
 export default class Beli extends Component {
   state = {
     produk,
-    total: 0
+    // total: 0
   }
-  masuk = () => {
-    let produk = this.state.produk.data.
-      resultValue[
-      "icms-zebra-5000383-2586219"].data
-    for (let i = 0; i < produk.length; i++) {
-      localStorage.setItem("detail", JSON.stringify(produk[i]))
-    }
-  }
+  // masuk = () => {
+  //   let produk = this.state.produk.data.
+  //     resultValue[
+  //     "icms-zebra-5000383-2586219"].data
+  //   for (let i = 0; i < produk.length; i++) {
+  //     localStorage.setItem("detail", JSON.stringify(produk[i]))
+  //   }
+  // }
 
   render() {
-    console.log(this.state.total)
+    // console.log(this.state.total)
     let produk = this.state.produk.data.
       resultValue[
       "icms-zebra-5000383-2586219"].data
@@ -46,7 +46,7 @@ export default class Beli extends Component {
                           <td>{item.itemPrice}</td>
                         </Card.Text>
                       </Card.Body>
-                      <Link to="/detail"><Button onClick={this.masuk/* () => localStorage.setItem('detail', JSON.stringify(produk[i])) */}>Tambah</Button></Link>
+                      <Link to="/detail"><Button onClick={ () => localStorage.setItem('detail', JSON.stringify(produk[i])) }>Tambah</Button></Link>
                     </Card>
                   </Col>
                 )}

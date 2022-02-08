@@ -15,7 +15,7 @@ export default class Login extends Component {
     //   console.log(e.target.user.value)
     // console.log(e.target.pass.value)
   }
-
+  
 
 
   render() {

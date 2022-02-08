@@ -10,7 +10,7 @@ export default class Detail extends Component {
     detail: localStorage.getItem("detail")
       ? JSON.parse(localStorage.getItem("detail"))
       : null,
-    total: 0,
+    // total: 0,
 
   };
 
@@ -45,7 +45,7 @@ export default class Detail extends Component {
 
 
   render() {
-    console.log();
+    // console.log(this.state.total);
     return (
       <div>
         {localStorage.getItem("detail") && (
